@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -120,6 +121,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
+        
         // Crear vector de movimiento basado en el input
         Vector3 moveDirection = new Vector3(moveInput.y, 0, -moveInput.x).normalized; //Ejes invertidos para que adelante sea hacia adelante del personaje
 
@@ -129,6 +131,7 @@ public class PlayerController : MonoBehaviour
 
         // Aplicar la velocidad al Rigidbody
         rb.linearVelocity = targetVelocity;
+        
     }
 
     private void HandleJump()
