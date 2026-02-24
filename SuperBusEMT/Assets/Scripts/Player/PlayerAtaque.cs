@@ -1,6 +1,9 @@
+using System.Threading;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerAtaque : MonoBehaviour
 {
@@ -20,6 +23,7 @@ public class PlayerAtaque : MonoBehaviour
     private bool atacando = false;
     public bool isBarrera = false;
 
+    public TextMeshProUGUI timerText; // Referencia al TextMeshPro para mostrar el tiempo
     private float timer = 0f;
     public float maxTiempo= 20f;
 
@@ -40,6 +44,8 @@ public class PlayerAtaque : MonoBehaviour
     {
         // Aquí podrías agregar lógica adicional si es necesario, como manejar el tiempo de ataque o super
         timer += Time.fixedDeltaTime;
+
+        timerText.text = "Tiempo Habilidad: " + timer.ToString("F0");
 
     }
 
@@ -83,7 +89,7 @@ public class PlayerAtaque : MonoBehaviour
             if (atacando) return;
             Debug.Log("Super Explosion presionado");
             StartCoroutine(MostrarCuboExplosion());
-            timer = 0f;
+            timer = 0f;   
         }
         
     }
