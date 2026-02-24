@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class DañoAlPlayer : MonoBehaviour
 {
-    public int dañoPorGolpe = 30;
+    public int danoPorGolpe = 30;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,7 +15,7 @@ public class DañoAlPlayer : MonoBehaviour
 
             if (playerVida != null)
             {
-                playerVida.RecibirDañoPlayer(dañoPorGolpe);
+                playerVida.RecibirDanoPlayer(danoPorGolpe);
             }
         }
     }

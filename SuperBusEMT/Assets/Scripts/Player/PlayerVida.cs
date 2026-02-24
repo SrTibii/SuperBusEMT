@@ -5,9 +5,9 @@ public class PlayerVida : MonoBehaviour
 {
     public int vidaActualPlayer;
 
-    public void RecibirDañoPlayer(int cantidadDaño)
+    public void RecibirDanoPlayer(int cantidadDano)
     {
-        vidaActualPlayer -= cantidadDaño; //Se va restando la vida
+        vidaActualPlayer -= cantidadDano; //Se va restando la vida
 
         if (vidaActualPlayer <= 0)
         {
@@ -20,7 +20,7 @@ public class PlayerVida : MonoBehaviour
         Destroy(this.gameObject);
         Debug.Log("Player muerto");
 
-        //Cuando se llame al metodo la escena se volverá a cargar
+        //Cuando se llame al metodo la escena se volverï¿½ a cargar
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

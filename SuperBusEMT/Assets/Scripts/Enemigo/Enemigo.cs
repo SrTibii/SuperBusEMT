@@ -7,9 +7,9 @@ public class Enemigo : MonoBehaviour
     public int vidaActualEnemigo = 100;
 
 
-    public void RecibirDañoEnemigo(int cantidadDaño)
+    public void RecibirDanoEnemigo(int cantidadDano)
     {
-        vidaActualEnemigo -= cantidadDaño; //Se va restando la vida
+        vidaActualEnemigo -= cantidadDano; //Se va restando la vida
 
         if (vidaActualEnemigo <= 0)
         {
