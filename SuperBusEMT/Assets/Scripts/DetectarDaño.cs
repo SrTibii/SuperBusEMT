@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class DetectarDaño : MonoBehaviour
 {
-
     public int danoPorGolpe = 30;
 
     private void OnTriggerEnter(Collider other)
@@ -20,8 +19,6 @@ public class DetectarDaño : MonoBehaviour
             {
                 enemigo.RecibirDanoEnemigo(danoPorGolpe);
             }
-
-
         } 
     }
 }

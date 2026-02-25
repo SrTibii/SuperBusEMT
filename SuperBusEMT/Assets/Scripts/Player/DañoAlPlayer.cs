@@ -3,11 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class DañoAlPlayer : MonoBehaviour
 {
-     
-
+    
     public int danoPorGolpe = 30;
     
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -18,9 +16,6 @@ public class DañoAlPlayer : MonoBehaviour
             PlayerVida playerVida = other.GetComponent<PlayerVida>(); //Cogemos la referencia del script del player
             PlayerAtaque playerAtaque = other.GetComponent<PlayerAtaque>();
             
-
-            
-
             if (playerAtaque != null && playerAtaque.isBarrera)
             {
                 Debug.Log("El player tiene la barrera activa, no recibe daño");
@@ -36,5 +31,4 @@ public class DañoAlPlayer : MonoBehaviour
         }
     }
 
-    
 }

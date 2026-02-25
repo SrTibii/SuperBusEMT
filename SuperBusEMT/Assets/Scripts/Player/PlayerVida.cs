@@ -17,23 +17,17 @@ public class PlayerVida : MonoBehaviour
         comboCount=0; // Reiniciar el contador de combo del player al recibir daño
         comboText.text = "x " + comboCount;
 
-
         if (vidaActualPlayer <= 0)
         {
             MorirPlayer();
         }
     }
 
-    
     public void AumentarCombo()
     {
         comboCount++;
         comboText.text = "x " + comboCount;
     }
-
-
-
-
 
     public void MorirPlayer()
     {
@@ -43,6 +37,5 @@ public class PlayerVida : MonoBehaviour
         //Cuando se llame al metodo la escena se volver� a cargar
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
 
 }

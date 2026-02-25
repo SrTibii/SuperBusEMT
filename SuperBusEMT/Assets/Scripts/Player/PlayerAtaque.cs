@@ -95,8 +95,7 @@ public class PlayerAtaque : MonoBehaviour
     }
 
     private void OnTriggerPressedSuperBarrera(InputAction.CallbackContext context)
-    {
-        
+    { 
         if (timer>= maxTiempo)
         {
             if (isBarrera) return;
@@ -104,8 +103,6 @@ public class PlayerAtaque : MonoBehaviour
             StartCoroutine(MostrarCuboBarrera());
             timer = 0f;
         }
-        
-
     }
 
 
@@ -180,9 +177,4 @@ public class PlayerAtaque : MonoBehaviour
 
         isBarrera = false;
     }
-
-
-
-
-
 }
