@@ -42,9 +42,19 @@ public class PlayerAtaque : MonoBehaviour
 
     public void FixedUpdate()
     {
-        // Aquí podrías agregar lógica adicional si es necesario, como manejar el tiempo de ataque o super
-        timer += Time.fixedDeltaTime;
+        // Solo incrementar el timer si aún no ha alcanzado el máximo
+        if (timer < maxTiempo)
+        {
+            timer += Time.fixedDeltaTime;
 
+            // Asegurar que no nos pasamos del máximo
+            if (timer > maxTiempo)
+            {
+                timer = maxTiempo;
+            }
+        }
+
+        // Actualizar el texto del timer
         timerText.text = "Tiempo Habilidad: " + timer.ToString("F0");
 
     }
