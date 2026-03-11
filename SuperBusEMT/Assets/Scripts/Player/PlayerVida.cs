@@ -25,15 +25,44 @@ public class PlayerVida : MonoBehaviour
     public TextMeshProUGUI comboText; // Referencia al texto que muestra el combo actual
     private int comboCount = 0; //Contador de combo del player
 
+    [Header("Tiempo de Combo")]
+    public float tiempoMaximoSinAtaque = 5f; // Tiempo máximo sin atacar para reiniciar el combo
+    private float temporizadorCombo = 0f; // Temporizador para controlar el tiempo sin atacar
+    private bool temporizadorComboActivo = false; // Bandera para saber si el temporizador está activo
+    private Coroutine corutinaReinicioCombo; // Referencia a la corrutina de reinicio de combo
+
     private void Start()
     {
         // Inicializar la vida al máximo al empezar
         vidaActualPlayer = vidaPlayerMaxima;
+
+        // Inicializar el texto del combo
+        if (comboText != null)
+        {
+            comboText.text = "x " + comboCount;
+        }
     }
 
     private void Update()
     {
         ActualizarInterfazVida(); // Actualizar la interfaz de vida cada frame
+
+        ActualizarTemporizadorCombo(); // Actualizar el temporizador de combo cada frame
+    }
+
+    void ActualizarTemporizadorCombo()
+    {
+        // Actualizar el temporizador de combo si está activo
+        if (temporizadorComboActivo)
+        {
+            temporizadorCombo += Time.deltaTime;
+
+            // Si se supera el tiempo máximo sin atacar, reiniciar combo
+            if (temporizadorCombo >= tiempoMaximoSinAtaque)
+            {
+                ReiniciarCombo();
+            }
+        }
     }
 
     void ActualizarInterfazVida()
@@ -45,8 +74,7 @@ public class PlayerVida : MonoBehaviour
     public void RecibirDanoPlayer(int cantidadDano)
     {
         vidaActualPlayer -= cantidadDano; //Se va restando la vida
-        comboCount = 0; //Reiniciar el contador de combo del player al recibir daño
-        comboText.text = "x " + comboCount; //Actualizar el texto del combo al recibir daño
+        ReiniciarCombo(); //Reiniciar el contador de combo del player al recibir daño
 
         // Detener la regeneración actual si está en curso
         if (corutinaRegeneracion != null)
@@ -121,6 +149,30 @@ public class PlayerVida : MonoBehaviour
     {
         comboCount++;
         comboText.text = "x " + comboCount;
+
+        // Reiniciar el temporizador de combo cada vez que se ataca
+        ReiniciarTemporizadorCombo();
+    }
+
+    // Método para reiniciar el temporizador de combo
+    private void ReiniciarTemporizadorCombo()
+    {
+        temporizadorCombo = 0f;
+        temporizadorComboActivo = true;
+    }
+
+    // Método para reiniciar completamente el combo
+    private void ReiniciarCombo()
+    {
+        if (comboCount > 0)
+        {
+            comboCount = 0;
+            comboText.text = "x " + comboCount;
+            Debug.Log("Combo reiniciado por tiempo sin atacar o por recibir daño");
+        }
+
+        temporizadorCombo = 0f;
+        temporizadorComboActivo = false; // Desactivar el temporizador cuando el combo es 0
     }
 
     public void MorirPlayer()
