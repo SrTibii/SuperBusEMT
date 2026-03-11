@@ -25,11 +25,25 @@ public class PlayerVida : MonoBehaviour
     public TextMeshProUGUI comboText; // Referencia al texto que muestra el combo actual
     private int comboCount = 0; //Contador de combo del player
 
+    [Header("Sistema de Daño por Combo")]
+    [Tooltip("Cada cuántos golpes aumenta el daño")]
+    public int golpesPorNivel = 5; // Cada 5 golpes sube de nivel
+    [Tooltip("Daño base del jugador")]
+    public int danoBase = 30; // Daño base
+    [Tooltip("Daño adicional por cada nivel de combo")]
+    public int danoExtraPorNivel = 10; // +10 de daño por cada golperPornivel realizado
+    private int nivelCombo = 0; // Nivel actual de combo (0 = sin bonus)
+
+    // Propiedad pública para obtener el daño actual basado en el combo
+    public int DanoActual
+    {
+        get { return danoBase + (nivelCombo * danoExtraPorNivel); }
+    }
+
     [Header("Tiempo de Combo")]
     public float tiempoMaximoSinAtaque = 5f; // Tiempo máximo sin atacar para reiniciar el combo
     private float temporizadorCombo = 0f; // Temporizador para controlar el tiempo sin atacar
     private bool temporizadorComboActivo = false; // Bandera para saber si el temporizador está activo
-    private Coroutine corutinaReinicioCombo; // Referencia a la corrutina de reinicio de combo
 
     private void Start()
     {
@@ -37,16 +51,12 @@ public class PlayerVida : MonoBehaviour
         vidaActualPlayer = vidaPlayerMaxima;
 
         // Inicializar el texto del combo
-        if (comboText != null)
-        {
-            comboText.text = "x " + comboCount;
-        }
+        ActualizarTextoCombo();
     }
 
     private void Update()
     {
         ActualizarInterfazVida(); // Actualizar la interfaz de vida cada frame
-
         ActualizarTemporizadorCombo(); // Actualizar el temporizador de combo cada frame
     }
 
@@ -148,10 +158,30 @@ public class PlayerVida : MonoBehaviour
     public void AumentarCombo()
     {
         comboCount++;
-        comboText.text = "x " + comboCount;
+
+        // Calcular el nivel actual de combo (cada X golpes = 1 nivel)
+        int nuevoNivel = comboCount / golpesPorNivel;
+
+        // Si el nivel ha cambiado, actualizar
+        if (nuevoNivel != nivelCombo)
+        {
+            nivelCombo = nuevoNivel;
+           Debug.Log($"¡Nivel de combo {nivelCombo}! Daño actual: {DanoActual}");
+        }
+
+        ActualizarTextoCombo();
 
         // Reiniciar el temporizador de combo cada vez que se ataca
         ReiniciarTemporizadorCombo();
+    }
+
+    // Método para actualizar el texto del combo mostrando nivel y daño
+    private void ActualizarTextoCombo()
+    {
+        if (comboText != null)
+        {
+            comboText.text = $"x{comboCount}";
+        }
     }
 
     // Método para reiniciar el temporizador de combo
@@ -167,7 +197,8 @@ public class PlayerVida : MonoBehaviour
         if (comboCount > 0)
         {
             comboCount = 0;
-            comboText.text = "x " + comboCount;
+            nivelCombo = 0;
+            ActualizarTextoCombo();
             Debug.Log("Combo reiniciado por tiempo sin atacar o por recibir daño");
         }
 
