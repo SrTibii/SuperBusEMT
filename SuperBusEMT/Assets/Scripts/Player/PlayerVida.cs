@@ -31,13 +31,26 @@ public class PlayerVida : MonoBehaviour
     [Tooltip("Daño base del jugador")]
     public int danoBase = 30; // Daño base
     [Tooltip("Daño adicional por cada nivel de combo")]
-    public int danoExtraPorNivel = 10; // +10 de daño por cada golperPornivel realizado
+    public int danoExtraPorNivel = 10; // +10 de daño por cada nivel de combo
     private int nivelCombo = 0; // Nivel actual de combo (0 = sin bonus)
 
-    // Propiedad pública para obtener el daño actual basado en el combo
+    [Header("Multiplicadores de Daño")]
+    [Tooltip("Multiplicador global de daño (1 = normal, 1.5 = 50% más, etc)")]
+    private float multiplicadorDanoGlobal = 1f; // Multiplicador por objetos especiales
+    
+    [Header("Objetos Especiales")]
+    public ObjetoEscudo objetoEscudoActual; // Referencia al escudo actual en la mano
+    public ObjetoSable objetoSableActual; // Referencia al objeto actual en la mano
+
+    // Propiedad pública para obtener el daño actual basado en el combo y multiplicadores
     public int DanoActual
     {
-        get { return danoBase + (nivelCombo * danoExtraPorNivel); }
+        get
+        {
+            float danoCalculado = danoBase + (nivelCombo * danoExtraPorNivel);
+            danoCalculado *= multiplicadorDanoGlobal;
+            return Mathf.RoundToInt(danoCalculado); // Redondear para que sea int
+        }
     }
 
     [Header("Tiempo de Combo")]
@@ -83,6 +96,14 @@ public class PlayerVida : MonoBehaviour
 
     public void RecibirDanoPlayer(int cantidadDano)
     {
+        // Si el escudo está activo, no recibir daño
+        PlayerAtaque playerAtaque = GetComponent<PlayerAtaque>();
+        if (playerAtaque != null && playerAtaque.isBarrera)
+        {
+            Debug.Log("¡Daño bloqueado por el escudo!");
+            return; // Salir del método sin aplicar daño
+        }
+
         vidaActualPlayer -= cantidadDano; //Se va restando la vida
         ReiniciarCombo(); //Reiniciar el contador de combo del player al recibir daño
 
@@ -166,7 +187,7 @@ public class PlayerVida : MonoBehaviour
         if (nuevoNivel != nivelCombo)
         {
             nivelCombo = nuevoNivel;
-           Debug.Log($"¡Nivel de combo {nivelCombo}! Daño actual: {DanoActual}");
+            Debug.Log($"¡Nivel de combo {nivelCombo}! Daño actual: {DanoActual}");
         }
 
         ActualizarTextoCombo();
@@ -175,7 +196,7 @@ public class PlayerVida : MonoBehaviour
         ReiniciarTemporizadorCombo();
     }
 
-    // Método para actualizar el texto del combo mostrando nivel y daño
+    // Método para actualizar el texto del combo (solo con el formato "x{comboCount}")
     private void ActualizarTextoCombo()
     {
         if (comboText != null)
@@ -206,12 +227,19 @@ public class PlayerVida : MonoBehaviour
         temporizadorComboActivo = false; // Desactivar el temporizador cuando el combo es 0
     }
 
+    // Método para actualizar el multiplicador de daño (llamado desde ObjetoSable)
+    public void ActualizarMultiplicadorDano(float nuevoMultiplicador)
+    {
+        multiplicadorDanoGlobal = nuevoMultiplicador;
+        Debug.Log($"Multiplicador de daño actualizado a x{multiplicadorDanoGlobal}. Daño actual: {DanoActual}");
+    }
+
     public void MorirPlayer()
     {
         Destroy(this.gameObject);
         Debug.Log("Player muerto");
 
-        //Cuando se llame al metodo la escena se volver� a cargar
+        //Cuando se llame al metodo la escena se volverá a cargar
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

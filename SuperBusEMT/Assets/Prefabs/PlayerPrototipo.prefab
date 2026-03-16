@@ -124,7 +124,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4531c973fb48d24ea76895110c331b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: "Assembly-CSharp::DetectarDa\xF1o"
-  danoPorGolpe: 100
 --- !u!1 &5742419924948410291
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,7 +501,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4531c973fb48d24ea76895110c331b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: "Assembly-CSharp::DetectarDa\xF1o"
-  danoPorGolpe: 30
+--- !u!1 &7761763389528200171
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8421693376877432444}
+  m_Layer: 0
+  m_Name: EscudoPoint
+  m_TagString: HandPoint2
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8421693376877432444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7761763389528200171}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.01700002, y: 0.26187992, z: 0.9760001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6055892081368153100}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8176547945505647551
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,8 +564,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8176547945505647551}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.72675157, z: 0, w: 0.68690044}
-  m_LocalPosition: {x: 3.7235122, y: 0.96912, z: -2.8270013}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.87, y: 0.96912, z: -4.15338}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -546,6 +575,8 @@ Transform:
   - {fileID: 1378023234304212699}
   - {fileID: 7984288836678502960}
   - {fileID: 4321401115476671620}
+  - {fileID: 2531326527255733266}
+  - {fileID: 8421693376877432444}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &196501570000524120
@@ -713,7 +744,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerVida
   vidaActualPlayer: 100
+  vidaPlayerMaxima: 100
+  barraSalud: {fileID: 0}
+  vidaText: {fileID: 0}
+  tiempoParaRegenerar: 5
+  cantidadRegeneracionPorSegundo: 20
   comboText: {fileID: 0}
+  golpesPorNivel: 5
+  danoBase: 30
+  danoExtraPorNivel: 10
+  objetoEscudoActual: {fileID: 0}
+  objetoSableActual: {fileID: 0}
+  tiempoMaximoSinAtaque: 5
 --- !u!114 &7846447266129681045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -775,3 +817,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6055892081368153100}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8954990079255034458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2531326527255733266}
+  m_Layer: 0
+  m_Name: SablePoint
+  m_TagString: HandPoint
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2531326527255733266
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8954990079255034458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.776, y: 0.26187992, z: 0.40937996}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6055892081368153100}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
