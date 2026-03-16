@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 6122644874198245569}
   - component: {fileID: 6153080607916022393}
   - component: {fileID: 8199286215301604431}
+  - component: {fileID: -3376993910095257872}
   m_Layer: 0
   m_Name: EnemigoBomba
   m_TagString: Enemigo
@@ -163,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemigo
   vidaActualEnemigo: 60
-  playerVida: {fileID: 0}
+  vidaEnemigoMaxima: 100
 --- !u!195 &3080187716641712132
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -235,7 +236,7 @@ MonoBehaviour:
           m_Value0: 9396546319523102719
           m_Value1: 7730930055930110122
         Name: States
-        m_Value: 2
+        m_Value: 1
     - rid: 543394692613275938
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -243,7 +244,7 @@ MonoBehaviour:
           m_Value0: 11463498759476717403
           m_Value1: 3170700164190161204
         Name: Target
-        m_Value: {fileID: 0}
+        m_Value: {fileID: 8176547945505647551, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
 --- !u!95 &6122644874198245569
 Animator:
   serializedVersion: 7
@@ -291,6 +292,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c7b58208c583a41a196c009489495b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombaEnemigo
+--- !u!54 &-3376993910095257872
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061420837306790176}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &8524966318187426064
 GameObject:
   m_ObjectHideFlags: 0

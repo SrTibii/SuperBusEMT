@@ -9,6 +9,7 @@ TagManager:
   - HandPoint
   - Enemigo
   - Retroceso
+  - Muerte
   layers:
   - Default
   - TransparentFX

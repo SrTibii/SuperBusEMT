@@ -8,7 +8,7 @@ public class Enemigo : MonoBehaviour
 {
     public int vidaActualEnemigo = 100;
     public int vidaEnemigoMaxima = 100;
-
+    public SistemaOleadas spawner;
     //[Header("Interfaz Vida")]
     //public Image barraSalud; // Arrastra aquí la imagen "Fill" del canvas hijo
     //public TextMeshProUGUI vidaText; // Opcional
@@ -44,6 +44,11 @@ public class Enemigo : MonoBehaviour
 
     public void MorirEnemigo()
     {
+        if (spawner != null)
+        {
+            spawner.NotificarMuerteEnemigo();
+        }
+
         Destroy(gameObject);
         Debug.Log("Enemigo Muerto");
     }
