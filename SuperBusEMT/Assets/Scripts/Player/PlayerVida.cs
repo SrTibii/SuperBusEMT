@@ -30,6 +30,7 @@ public class PlayerVida : MonoBehaviour
     public int golpesPorNivel = 5; // Cada 5 golpes sube de nivel
     [Tooltip("Daño base del jugador")]
     public int danoBase = 30; // Daño base
+    public int danoBomba = 100; // Daño bomba
     [Tooltip("Daño adicional por cada nivel de combo")]
     public int danoExtraPorNivel = 10; // +10 de daño por cada nivel de combo
     private int nivelCombo = 0; // Nivel actual de combo (0 = sin bonus)

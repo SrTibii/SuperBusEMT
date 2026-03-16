@@ -752,6 +752,7 @@ MonoBehaviour:
   comboText: {fileID: 0}
   golpesPorNivel: 5
   danoBase: 30
+  danoBomba: 100
   danoExtraPorNivel: 10
   objetoEscudoActual: {fileID: 0}
   objetoSableActual: {fileID: 0}
