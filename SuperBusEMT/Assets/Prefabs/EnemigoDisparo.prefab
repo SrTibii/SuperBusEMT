@@ -111,37 +111,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &3493152714681676450
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4414154616902406287}
-  m_Layer: 0
-  m_Name: Retirada
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4414154616902406287
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3493152714681676450}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.85}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3142890206943370516}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5163721584355376879
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,6 +129,7 @@ GameObject:
   - component: {fileID: 2691596064727030917}
   - component: {fileID: 2656335518765166771}
   - component: {fileID: -4335585660203399769}
+  - component: {fileID: 5015019457740547664}
   m_Layer: 0
   m_Name: EnemigoDisparo
   m_TagString: Enemigo
@@ -175,14 +145,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5163721584355376879}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.61, y: 1.4852941, z: -9.46}
   m_LocalScale: {x: 1.3601, y: 2.9705892, z: 0.7402511}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6283972508125743396}
   - {fileID: 7131436093350472053}
-  - {fileID: 4414154616902406287}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6811127349786120837
@@ -276,6 +245,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemigo
   vidaActualEnemigo: 100
   vidaEnemigoMaxima: 100
+  spawner: {fileID: 0}
+  playerVida: {fileID: 0}
 --- !u!195 &5856932061487884157
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -313,10 +284,8 @@ MonoBehaviour:
   m_Graph: {fileID: 8155649113589432341, guid: adf66d25af2915341ad7640144c7c5cc, type: 2}
   m_BlackboardVariableOverridesList:
   - rid: 543394684732440860
-  - rid: 543394684732441224
   - rid: 543394692219536266
   - rid: 543394692613275938
-  - rid: 4686553130383705079
   m_OriginalGraph: {fileID: 0}
   m_IsInitialised: 0
   m_IsStarted: 0
@@ -331,16 +300,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 5163721584355376879}
-    - rid: 543394684732441224
-      type: {class: 'BlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 1731474651703286103
-          m_Value1: 15462826770257979052
-        Name: Waypoints
-        m_Value:
-        - {fileID: 0}
-        - {fileID: 0}
     - rid: 543394692219536266
       type: {class: 'BlackboardVariable`1[[Status, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -356,15 +315,7 @@ MonoBehaviour:
           m_Value0: 11463498759476717403
           m_Value1: 3170700164190161204
         Name: Target
-        m_Value: {fileID: 8176547945505647551, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
-    - rid: 4686553130383705079
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 16853147874033220975
-          m_Value1: 372348578613838286
-        Name: Retirada
-        m_Value: {fileID: 3493152714681676450}
+        m_Value: {fileID: 0}
 --- !u!95 &2691596064727030917
 Animator:
   serializedVersion: 7
@@ -400,10 +351,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DisparoEnemigo
   balaPrefab: {fileID: 6809891328564463054, guid: 96e0d0aa48a502d42b95156505b7e435, type: 3}
-  velocidadDisparo: 7
+  velocidadDisparo: 5
   AlturaArma: {fileID: 7131436093350472053}
   launchAngle: 45
-  target: {fileID: 6055892081368153100, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
+  target: {fileID: 0}
 --- !u!54 &-4335585660203399769
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -431,6 +382,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5015019457740547664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5163721584355376879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab2083093b0ca04a9b06e22642c217a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollDestruirEnemigo
 --- !u!1 &8944761278932461951
 GameObject:
   m_ObjectHideFlags: 0

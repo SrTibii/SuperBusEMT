@@ -10,7 +10,7 @@ public class Enemigo : MonoBehaviour
     public int vidaEnemigoMaxima = 100;
     public SistemaOleadas spawner;
     //[Header("Interfaz Vida")]
-    //public Image barraSalud; // Arrastra aquí la imagen "Fill" del canvas hijo
+    //public Image barraSalud; // Arrastra aquï¿½ la imagen "Fill" del canvas hijo
     //public TextMeshProUGUI vidaText; // Opcional
 
     [SerializeField] private PlayerVida playerVida;
@@ -32,7 +32,7 @@ public class Enemigo : MonoBehaviour
             MorirEnemigo();
         }
     }
-
+    
     //void ActualizarInterfazVida()
     //{
     //    if (barraSalud != null)
