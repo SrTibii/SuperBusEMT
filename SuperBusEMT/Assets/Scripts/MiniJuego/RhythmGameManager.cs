@@ -19,11 +19,11 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private RectTransform[] laneHitPoints = new RectTransform[4];
 
     [SerializeField] private TMPro.TMP_Text comboText;
-    [SerializeField] private TMPro.TMP_Text judgeText;
+    
 
     [Header("Judgement Windows (seconds)")]
-    [SerializeField] private float perfectWindow = 0.05f;
-    [SerializeField] private float goodWindow = 0.12f;
+    [SerializeField] private float perfectWindow = 0.10f;
+    [SerializeField] private float goodWindow = 0.22f;
 
     [Header("Optimization")]
     [SerializeField] private int poolSize = 64;
@@ -118,8 +118,9 @@ public class RhythmGameManager : MonoBehaviour
             if (error > goodWindow)
             {
                 RegisterMiss();
-                n.Despawn();
+                n.ShowJudgement("MISS");
                 activeNotes.RemoveAt(i);
+                n.DespawnAfter(0.25f);
             }
         }
 
@@ -220,14 +221,14 @@ public class RhythmGameManager : MonoBehaviour
         score += points + combo;
 
         if (comboText) comboText.text = $"Combo: {combo}";
-        if (judgeText) judgeText.text = (points == 300) ? "PERFECT" : "GOOD";
+        
     }
 
     private void RegisterMiss()
     {
         combo = 0;
         if (comboText) comboText.text = $"Combo: {combo}";
-        if (judgeText) judgeText.text = "MISS";
+        
     }
 
     public void ReturnToPool(NoteView n)
@@ -240,24 +241,48 @@ public class RhythmGameManager : MonoBehaviour
         if (!playing || note == null || !note.active) return;
 
         double now = AudioSettings.dspTime;
-        double absError = System.Math.Abs(now - note.hitDspTime);
+        double signedError = now - note.hitDspTime; // <0 temprano, >0 tarde
+        double absError = System.Math.Abs(signedError);
 
+        // Muy temprano: feedback sin castigo
+        if (signedError < -goodWindow)
+        {
+            note.ShowJudgement("EARLY"); // o "ANTES"
+            return;
+        }
+
+        // PERFECT
         if (absError <= perfectWindow)
         {
             RegisterHit(300);
-            RemoveActive(note);
+            note.ShowJudgement("PERFECT");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.25f);
+            return;
         }
-        else if (absError <= goodWindow)
+
+        // GOOD (mantiene combo)
+        if (absError <= goodWindow)
         {
-            RegisterHit(100);
-            RemoveActive(note);
+            RegisterHit(250); // más friendly que 100 (ajústalo a gusto)
+            note.ShowJudgement("GOOD");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.25f);
+            return;
+        }
+
+        // Fuera de ventana:
+        // - Si es tarde de verdad -> MISS (rompe combo)
+        // - Si está cerca pero fuera (un pelín tarde) -> feedback sin castigo
+        if (signedError > goodWindow)
+        {
+            RegisterMiss();
+            note.ShowJudgement("MISS");
         }
         else
         {
-            // Tocaste fuera de ventana: cuenta como miss (OSU feel básico)
-            RegisterMiss();
-            // Opcional: NO despawnear para permitir reintento si es muy temprano
-            // Para empezar, lo dejamos como miss sin borrar.
+            // Está un poco tarde pero no lo suficiente para castigar
+            note.ShowJudgement("LATE"); // o "TARDE"
         }
     }
 }
