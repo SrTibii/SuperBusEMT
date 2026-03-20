@@ -1923,7 +1923,7 @@ GameObject:
   - component: {fileID: 1321792464}
   - component: {fileID: 1321792463}
   m_Layer: 0
-  m_Name: RhythmGame
+  m_Name: RhythmGameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2040,7 +2040,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RhythmGameManager
   beatMap: {fileID: 11400000, guid: 5a85690b2d282894ca4e66f24687663f, type: 2}
   audioSource: {fileID: 1321792463}
-  leadTime: 1.2
+  leadTime: 1.5
   notePrefab: {fileID: -6578953060013291702, guid: 0924fbaffc728f84d98fca1429af9bec, type: 3}
   laneSpawnPoints:
   - {fileID: 379808116}

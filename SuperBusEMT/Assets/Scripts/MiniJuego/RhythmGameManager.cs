@@ -96,8 +96,7 @@ public class RhythmGameManager : MonoBehaviour
             else break;
         }
 
-        // 2) Actualizar visual (mover notas hacia el punto de hit)
-        // t = 0 cuando spawnea, t = 1 cuando llega al hit
+        // 2) Actualizar visual OSU (encoger approach ring)
         for (int i = 0; i < activeNotes.Count; i++)
         {
             var n = activeNotes[i];
@@ -106,12 +105,7 @@ public class RhythmGameManager : MonoBehaviour
             float t = 1f - (float)((n.hitDspTime - now) / leadTime);
             t = Mathf.Clamp01(t);
 
-            RectTransform noteRT = (RectTransform)n.transform;
-
-            Vector2 from = laneSpawnPoints[n.lane].anchoredPosition;
-            Vector2 to = laneHitPoints[n.lane].anchoredPosition;
-
-            noteRT.anchoredPosition = Vector2.LerpUnclamped(from, to, t);
+            n.SetApproach(t);
         }
 
         // 3) Miss automático: si ya pasó el goodWindow sin pulsar
@@ -132,27 +126,38 @@ public class RhythmGameManager : MonoBehaviour
         // 4) Fin canción (si hay clip)
         // if (audioSource != null && audioSource.clip != null && songTime > audioSource.clip.length + 0.5)
         //     playing = false;
+        if (nextNoteIndex >= beatMap.notes.Count && activeNotes.Count == 0)
+            playing = false;
     }
 
     private void Spawn(int lane, double noteTimeSecondsFromSongStart)
     {
-        if (lane < 0 || lane >= laneSpawnPoints.Length) return;
+        if (lane < 0 || lane >= laneHitPoints.Length) return;
 
         if (pool.Count == 0)
         {
-            // Si te quedas sin pool, mejor no instanciar en móvil: simplemente no spawneas.
+            // En móvil mejor no instanciar en runtime
             return;
         }
 
         var n = pool.Dequeue();
 
-        // Colocar visualmente
-        n.transform.position = laneSpawnPoints[lane].position;
-        n.transform.rotation = laneSpawnPoints[lane].rotation;
+        // Colocar visualmente en el HIT POINT (OSU-style: posición final)
+        RectTransform nrt = (RectTransform)n.transform;
+
+        // Asegura que está dentro del Canvas/NotesParent
+        if (notesParent != null)
+            nrt.SetParent(notesParent, false);
+
+        nrt.anchoredPosition = laneHitPoints[lane].anchoredPosition;
+        nrt.localRotation = Quaternion.identity;
+        nrt.localScale = Vector3.one;
 
         // Convertir noteTime (tiempo de canción) a dsp absoluto
         double hitDsp = songStartDsp + noteTimeSecondsFromSongStart;
-        n.Init(this, lane, hitDsp);
+
+        // Inicializa nota (si tu Init aún no recibe leadTime, déjalo como lo tenías)
+        n.Init(this, lane, hitDsp, leadTime);
 
         activeNotes.Add(n);
     }
@@ -228,5 +233,31 @@ public class RhythmGameManager : MonoBehaviour
     public void ReturnToPool(NoteView n)
     {
         pool.Enqueue(n);
+    }
+
+    public void TryHitNote(NoteView note)
+    {
+        if (!playing || note == null || !note.active) return;
+
+        double now = AudioSettings.dspTime;
+        double absError = System.Math.Abs(now - note.hitDspTime);
+
+        if (absError <= perfectWindow)
+        {
+            RegisterHit(300);
+            RemoveActive(note);
+        }
+        else if (absError <= goodWindow)
+        {
+            RegisterHit(100);
+            RemoveActive(note);
+        }
+        else
+        {
+            // Tocaste fuera de ventana: cuenta como miss (OSU feel básico)
+            RegisterMiss();
+            // Opcional: NO despawnear para permitir reintento si es muy temprano
+            // Para empezar, lo dejamos como miss sin borrar.
+        }
     }
 }
