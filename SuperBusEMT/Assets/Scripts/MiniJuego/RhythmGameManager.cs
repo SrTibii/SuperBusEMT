@@ -19,11 +19,11 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private RectTransform[] laneHitPoints = new RectTransform[4];
 
     [SerializeField] private TMPro.TMP_Text comboText;
-    [SerializeField] private TMPro.TMP_Text judgeText;
+    
 
     [Header("Judgement Windows (seconds)")]
-    [SerializeField] private float perfectWindow = 0.05f;
-    [SerializeField] private float goodWindow = 0.12f;
+    [SerializeField] private float perfectWindow = 0.10f;
+    [SerializeField] private float goodWindow = 0.22f;
 
     [Header("Optimization")]
     [SerializeField] private int poolSize = 64;
@@ -96,8 +96,7 @@ public class RhythmGameManager : MonoBehaviour
             else break;
         }
 
-        // 2) Actualizar visual (mover notas hacia el punto de hit)
-        // t = 0 cuando spawnea, t = 1 cuando llega al hit
+        // 2) Actualizar visual OSU (encoger approach ring)
         for (int i = 0; i < activeNotes.Count; i++)
         {
             var n = activeNotes[i];
@@ -106,12 +105,7 @@ public class RhythmGameManager : MonoBehaviour
             float t = 1f - (float)((n.hitDspTime - now) / leadTime);
             t = Mathf.Clamp01(t);
 
-            RectTransform noteRT = (RectTransform)n.transform;
-
-            Vector2 from = laneSpawnPoints[n.lane].anchoredPosition;
-            Vector2 to = laneHitPoints[n.lane].anchoredPosition;
-
-            noteRT.anchoredPosition = Vector2.LerpUnclamped(from, to, t);
+            n.SetApproach(t);
         }
 
         // 3) Miss automático: si ya pasó el goodWindow sin pulsar
@@ -124,35 +118,47 @@ public class RhythmGameManager : MonoBehaviour
             if (error > goodWindow)
             {
                 RegisterMiss();
-                n.Despawn();
+                n.ShowJudgement("MISS");
                 activeNotes.RemoveAt(i);
+                n.DespawnAfter(0.25f);
             }
         }
 
         // 4) Fin canción (si hay clip)
         // if (audioSource != null && audioSource.clip != null && songTime > audioSource.clip.length + 0.5)
         //     playing = false;
+        if (nextNoteIndex >= beatMap.notes.Count && activeNotes.Count == 0)
+            playing = false;
     }
 
     private void Spawn(int lane, double noteTimeSecondsFromSongStart)
     {
-        if (lane < 0 || lane >= laneSpawnPoints.Length) return;
+        if (lane < 0 || lane >= laneHitPoints.Length) return;
 
         if (pool.Count == 0)
         {
-            // Si te quedas sin pool, mejor no instanciar en móvil: simplemente no spawneas.
+            // En móvil mejor no instanciar en runtime
             return;
         }
 
         var n = pool.Dequeue();
 
-        // Colocar visualmente
-        n.transform.position = laneSpawnPoints[lane].position;
-        n.transform.rotation = laneSpawnPoints[lane].rotation;
+        // Colocar visualmente en el HIT POINT (OSU-style: posición final)
+        RectTransform nrt = (RectTransform)n.transform;
+
+        // Asegura que está dentro del Canvas/NotesParent
+        if (notesParent != null)
+            nrt.SetParent(notesParent, false);
+
+        nrt.anchoredPosition = laneHitPoints[lane].anchoredPosition;
+        nrt.localRotation = Quaternion.identity;
+        nrt.localScale = Vector3.one;
 
         // Convertir noteTime (tiempo de canción) a dsp absoluto
         double hitDsp = songStartDsp + noteTimeSecondsFromSongStart;
-        n.Init(this, lane, hitDsp);
+
+        // Inicializa nota (si tu Init aún no recibe leadTime, déjalo como lo tenías)
+        n.Init(this, lane, hitDsp, leadTime);
 
         activeNotes.Add(n);
     }
@@ -215,18 +221,68 @@ public class RhythmGameManager : MonoBehaviour
         score += points + combo;
 
         if (comboText) comboText.text = $"Combo: {combo}";
-        if (judgeText) judgeText.text = (points == 300) ? "PERFECT" : "GOOD";
+        
     }
 
     private void RegisterMiss()
     {
         combo = 0;
         if (comboText) comboText.text = $"Combo: {combo}";
-        if (judgeText) judgeText.text = "MISS";
+        
     }
 
     public void ReturnToPool(NoteView n)
     {
         pool.Enqueue(n);
+    }
+
+    public void TryHitNote(NoteView note)
+    {
+        if (!playing || note == null || !note.active) return;
+
+        double now = AudioSettings.dspTime;
+        double signedError = now - note.hitDspTime; // <0 temprano, >0 tarde
+        double absError = System.Math.Abs(signedError);
+
+        // Muy temprano: feedback sin castigo
+        if (signedError < -goodWindow)
+        {
+            note.ShowJudgement("EARLY"); // o "ANTES"
+            return;
+        }
+
+        // PERFECT
+        if (absError <= perfectWindow)
+        {
+            RegisterHit(300);
+            note.ShowJudgement("PERFECT");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.25f);
+            return;
+        }
+
+        // GOOD (mantiene combo)
+        if (absError <= goodWindow)
+        {
+            RegisterHit(250); // más friendly que 100 (ajústalo a gusto)
+            note.ShowJudgement("GOOD");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.25f);
+            return;
+        }
+
+        // Fuera de ventana:
+        // - Si es tarde de verdad -> MISS (rompe combo)
+        // - Si está cerca pero fuera (un pelín tarde) -> feedback sin castigo
+        if (signedError > goodWindow)
+        {
+            RegisterMiss();
+            note.ShowJudgement("MISS");
+        }
+        else
+        {
+            // Está un poco tarde pero no lo suficiente para castigar
+            note.ShowJudgement("LATE"); // o "TARDE"
+        }
     }
 }
