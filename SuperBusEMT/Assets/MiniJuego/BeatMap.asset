@@ -18,18 +18,42 @@ MonoBehaviour:
   - time: 1
     lane: 0
     type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
   - time: 1.5
     lane: 1
     type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
   - time: 2
     lane: 2
     type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
   - time: 2.5
     lane: 3
     type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
   - time: 3
     lane: 0
     type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
   - time: 3.5
     lane: 1
     type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
+  - time: 3.5
+    lane: 1
+    type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
