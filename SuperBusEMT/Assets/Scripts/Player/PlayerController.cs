@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     private readonly RaycastHit[] groundHits = new RaycastHit[1];
     private int fixedFrameCount;
 
+    [SerializeField] private PlayerKnockback knockbackScript;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -39,6 +41,10 @@ public class PlayerController : MonoBehaviour
 
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+
+        // Obtener el script de knockback del mismo objeto
+        knockbackScript = GetComponent<PlayerKnockback>();
     }
 
     private void OnEnable()
@@ -78,6 +84,10 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        
+
+
+
         // Si en Awake no existía Camera.main, la cacheamos aquí una vez
         if (camTr == null && Camera.main != null)
             camTr = Camera.main.transform;
@@ -135,10 +145,15 @@ public class PlayerController : MonoBehaviour
         }
 
         // Mover en esa dirección (solo XZ) y mantener la Y
+        Vector3 v = rb.linearVelocity;
         Vector3 desiredXZ = moveDir * moveSpeed;
 
-        Vector3 v = rb.linearVelocity;
-        rb.linearVelocity = new Vector3(desiredXZ.x, v.y, desiredXZ.z);
+        // SOLO toca XZ si NO hay knockback
+        if (knockbackScript == null || !knockbackScript.IsKnockbackActive())
+        {
+            rb.linearVelocity = new Vector3(desiredXZ.x, v.y, desiredXZ.z);
+        }
+        // Si hay knockback, la velocidad la maneja PlayerKnockback con AddForce
     }
 
     private void HandleJump()

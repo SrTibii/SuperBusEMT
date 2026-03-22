@@ -2,46 +2,43 @@ using UnityEngine;
 
 public class RetrocesoAlPlayer : MonoBehaviour
 {
-    public float knockbackFuerza = 25f;
-
-    private bool jugadorEnKnockback = false;
-    private float knockbackTimer = 0f;
-    private float knockbackDuration = 0.3f; // 0.3 segundos de knockback
+    public int danoPorGolpe = 30;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player") || jugadorEnKnockback) return;
-
-        Rigidbody rb = other.GetComponent<Rigidbody>();
-        if (rb == null) return;
-
-        // Desactiva movimiento del jugador durante knockback
-        jugadorEnKnockback = true;
-        knockbackTimer = knockbackDuration;
-
-        // Dirección: MUCHO más atrás que arriba
-        Vector3 away = (other.transform.position - transform.position).normalized;
-        Vector3 dir = (away * 10f + Vector3.up * 1f).normalized;
-
-        // Aplica knockback FLUIDO
-        rb.linearVelocity = dir * knockbackFuerza;
-    }
-
-    void FixedUpdate()
-    {
-        if (jugadorEnKnockback)
+        if (other.CompareTag("Player"))
         {
-            knockbackTimer -= Time.fixedDeltaTime;
-            if (knockbackTimer <= 0)
+            Debug.Log("Daño al player");
+
+            PlayerVida playerVida = other.GetComponent<PlayerVida>();
+            PlayerAtaque playerAtaque = other.GetComponent<PlayerAtaque>();
+            PlayerKnockback knock = other.GetComponent<PlayerKnockback>();
+
+            if (playerAtaque != null && playerAtaque.isBarrera)
             {
-                jugadorEnKnockback = false;
+                Debug.Log("El player tiene la barrera activa, no recibe daño");
+                return;
+            }
+
+            if (playerVida != null)
+            {
+                playerVida.RecibirDanoPlayer(danoPorGolpe);
+            }
+
+            if (knock != null)
+            {
+                // Dirección hacia ATRÁS del enemigo
+                Vector3 knockDir = transform.forward;   // adelante del enemigo
+                knockDir.y = 0f;
+                knockDir.Normalize();
+
+                // EMPUJAR al player hacia el ATRÁS del enemigo
+                // es decir: dirección del enemigo, SIN invertirla aquí
+                knock.ApplyKnockback(knockDir);
             }
         }
     }
-
-    // ESTO es lo que tu script del jugador debe comprobar:
-    public bool EstaEnKnockback()
-    {
-        return jugadorEnKnockback;
-    }
 }
+
+
+
